@@ -48,6 +48,12 @@ module RSpec
       config.include RSpec::Rails::ViewExampleGroup,       :type => :view
       config.include RSpec::Rails::FeatureExampleGroup,    :type => :feature
 
+      if defined?(ActiveRecord) && defined?(::RSpec::Mocks)
+        ::RSpec::Mocks.configuration.when_declaring_verifying_double do |possible_model|
+          possible_model.target.define_attribute_methods if possible_model.target.respond_to?(:define_attribute_methods)
+        end
+      end
+
       if defined?(ActionMailer)
         config.include RSpec::Rails::MailerExampleGroup, :type => :mailer
       end
